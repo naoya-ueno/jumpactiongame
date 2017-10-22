@@ -56,10 +56,12 @@ public class GameScreen extends ScreenAdapter {
     int mScore;
     int mHighScore;
     Preferences mPrefs; // ←追加する
+    Sound ufoSound = Gdx.audio.newSound(Gdx.files.internal("ufo.mp3"));
+    Sound starSound = Gdx.audio.newSound(Gdx.files.internal("star.mp3"));
+    Sound gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
+    Sound enemySound = Gdx.audio.newSound(Gdx.files.internal("step.mp3"));
 
     public GameScreen(JumpActionGame game) {
-        Sound bgmSound = Gdx.audio.newSound(Gdx.files.internal("bgm.mp3"));
-        bgmSound.play(1.0f);
         mGame = game;
 
         // 背景の準備
@@ -271,7 +273,6 @@ public class GameScreen extends ScreenAdapter {
     private void checkCollision() {
         // UFO(ゴールとの当たり判定)
         if (mPlayer.getBoundingRectangle().overlaps(mUfo.getBoundingRectangle())) {
-            Sound ufoSound = Gdx.audio.newSound(Gdx.files.internal("ufo.mp3"));
             ufoSound.play(1.0f);
             mGameState = GAME_STATE_GAMEOVER;
             return;
@@ -286,7 +287,6 @@ public class GameScreen extends ScreenAdapter {
             }
 
             if (mPlayer.getBoundingRectangle().overlaps(star.getBoundingRectangle())) {
-                Sound starSound = Gdx.audio.newSound(Gdx.files.internal("star.mp3"));
                 starSound.play(1.0f);
                 star.get();
                 mScore++;
@@ -305,7 +305,6 @@ public class GameScreen extends ScreenAdapter {
             Enemy enemy = mEnemys.get(i);
 
             if (mPlayer.getBoundingRectangle().overlaps(enemy.getBoundingRectangle())) {
-                Sound gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
                 gameOverSound.play(1.0f);
                 mGameState = GAME_STATE_GAMEOVER;
                 return;
@@ -328,7 +327,6 @@ public class GameScreen extends ScreenAdapter {
             if (mPlayer.getY() > step.getY()) {
                 if (mPlayer.getBoundingRectangle().overlaps(step.getBoundingRectangle())) {
                     mPlayer.hitStep();
-                    Sound enemySound = Gdx.audio.newSound(Gdx.files.internal("step.mp3"));
                     enemySound.play(1.0f);
                     if (mRandom.nextFloat() > 0.5f) {
                         step.vanish();
@@ -341,7 +339,6 @@ public class GameScreen extends ScreenAdapter {
 
     private void checkGameOver() {
         if (mHeightSoFar - CAMERA_HEIGHT / 2 > mPlayer.getY()) {
-            Sound gameOverSound = Gdx.audio.newSound(Gdx.files.internal("gameover.mp3"));
             gameOverSound.play(1.0f);
             Gdx.app.log("JampActionGame", "GAMEOVER");
             mGameState = GAME_STATE_GAMEOVER;
